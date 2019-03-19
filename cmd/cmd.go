@@ -11,12 +11,14 @@ import (
 type Cmd struct {
 	token     string
 	channelID string
+	userID    string
 }
 
-func NewCmd(token, channelID string) Cmd {
+func NewCmd(token, channelID, userID string) Cmd {
 	return Cmd{
 		token:     token,
 		channelID: channelID,
+		userID:    userID,
 	}
 }
 
@@ -30,10 +32,10 @@ func (c Cmd) StampEmoji(emoji string, emojiMap map[string]string) error {
 	text := fmt.Sprintf("stamp `%s`", emoji)
 	imgURL := emojiMap[strings.Trim(emoji, ":")]
 	a := newAttachment(text, imgURL, "#FFAACC")
-	arg := newArgument(c.token, c.channelID, "")
+	arg := newPublicArgument(c.token, c.channelID, "")
 	arg.setAttachments(a)
 
-	return postMessage(c.token, arg)
+	return callChatAPI(c.token, arg, postMessageAPI)
 }
 
 func (c Cmd) SendEmojiMap(emojiMap map[string]string) error {
@@ -52,7 +54,17 @@ func (c Cmd) SendEmojiMap(emojiMap map[string]string) error {
 	if err != nil {
 		return err
 	}
-	arg := newArgument(c.token, c.channelID, string(b))
+	arg := newPrivateArgument(c.token, c.channelID, string(b), c.userID)
 
-	return postMessage(c.token, arg)
+	return callChatAPI(c.token, arg, postEphemeralAPI)
+}
+
+func (c Cmd) HelpMessage() error {
+	text := "*get emoji list*\n```cmoji list```\n\n*stamp emoji*\n```cmoji stamp :custom_emoji:```"
+	a := newAttachment(text, "", "#CCCCCC")
+	text := "cmoji is custom emoji manager, usage."
+	arg := newPrivateArgument(c.token, c.channelID, text, c.userID)
+	arg.setAttachments(a)
+
+	return callChatAPI(c.token, arg, postEphemeralAPI)
 }

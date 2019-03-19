@@ -9,14 +9,18 @@ import (
 	"net/http"
 )
 
-func postMessage(token string, arg *argument) error {
+const (
+	postMessageAPI   = "https://slack.com/api/chat.postMessage"
+	postEphemeralAPI = "https://slack.com/api/chat.postEphemeral"
+)
+
+func callChatAPI(token string, arg *argument, url string) error {
 	b, err := json.Marshal(arg)
 	if err != nil {
 		return err
 	}
 	r := bytes.NewReader(b)
 
-	url := "https://slack.com/api/chat.postMessage"
 	req, err := http.NewRequest("POST", url, r)
 	if err != nil {
 		return err
@@ -26,11 +30,16 @@ func postMessage(token string, arg *argument) error {
 
 	c := http.DefaultClient
 	res, err := c.Do(req)
-	b, _ = ioutil.ReadAll(res.Body)
-	fmt.Println(string(b))
 	if err != nil {
 		return err
 	}
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
+	fmt.Println(string(body))
+
 	return nil
 }
 

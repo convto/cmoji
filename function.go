@@ -18,9 +18,10 @@ func Cmoji(w http.ResponseWriter, r *http.Request) {
 	query, _ := url.ParseQuery(string(b))
 	t := query.Get("text")
 	channelID := query.Get("channel_id")
+	userID := query.Get("user_id")
 	token := os.Getenv("SLACK_OAUTH_TOKEN")
 
-	c := cmd.NewCmd(token, channelID)
+	c := cmd.NewCmd(token, channelID, userID)
 	em, err := c.ListEmoji()
 	if err != nil {
 		fmt.Fprintln(w, err)
