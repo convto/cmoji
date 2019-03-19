@@ -1,6 +1,7 @@
 package cmoji
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -32,16 +33,25 @@ func Cmoji(w http.ResponseWriter, r *http.Request) {
 		err := c.SendEmojiMap(em)
 		if err != nil {
 			fmt.Fprintln(w, err)
+			return
 		}
 	case strings.Contains(t, "stamp"):
+		fields := strings.Fields(t)
+		if len(fields) != 2 {
+			err := errors.New("required :custom_emoji: parameter. and support only one emoji")
+			fmt.Fprintln(w, err)
+			return
+		}
 		err := c.StampEmoji(strings.Fields(t)[1], em)
 		if err != nil {
 			fmt.Fprintln(w, err)
+			return
 		}
 	default:
 		err := c.HelpMessage()
 		if err != nil {
 			fmt.Fprintln(w, err)
+			return
 		}
 	}
 }
