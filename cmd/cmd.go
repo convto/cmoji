@@ -60,11 +60,8 @@ func (c Cmd) SendEmojiMap(emojiMap map[string]string) error {
 }
 
 func (c Cmd) HelpMessage() error {
-	text := "*get emoji list*\n```cmoji list```\n\n*stamp emoji*\n```cmoji stamp :custom_emoji:```"
-	a := newAttachment(text, "", "#CCCCCC")
-	text := "cmoji is custom emoji manager, usage."
+	text := "cmoji is custom emoji manager, useage.\n\n*get emoji list*\n```cmoji list```\n\n*stamp emoji*\n```cmoji stamp :custom_emoji:```"
 	arg := newPrivateArgument(c.token, c.channelID, text, c.userID)
-	arg.setAttachments(a)
 
 	return callChatAPI(c.token, arg, postEphemeralAPI)
 }

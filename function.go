@@ -39,7 +39,9 @@ func Cmoji(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(w, err)
 		}
 	default:
-		str := "cmoji is custom emoji manager, useage.\n\n*get emoji list*\n```cmoji list```\n\n*stamp emoji*\n```cmoji stamp :custom_emoji:```"
-		fmt.Fprintln(w, str)
+		err := c.HelpMessage()
+		if err != nil {
+			fmt.Fprintln(w, err)
+		}
 	}
 }
