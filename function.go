@@ -1,4 +1,4 @@
-package p
+package cmoji
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 	"github.com/srttk/cmoji/cmd"
 )
 
-func cmoji(w http.ResponseWriter, r *http.Request) {
+func Cmoji(w http.ResponseWriter, r *http.Request) {
 	b, _ := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 
