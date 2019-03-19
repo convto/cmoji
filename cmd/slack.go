@@ -1,4 +1,4 @@
-package cmoji
+package cmd
 
 import (
 	"bytes"

@@ -1,4 +1,4 @@
-package cmoji
+package cmd
 
 type argument struct {
 	Token       string       `json:"token"`

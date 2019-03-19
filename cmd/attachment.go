@@ -1,4 +1,4 @@
-package cmoji
+package cmd
 
 type attachment struct {
 	Text     string `json:"text"`
