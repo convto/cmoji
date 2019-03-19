@@ -8,8 +8,8 @@ type argument struct {
 	Attachments []attachment `json:"attachments"`
 }
 
-func newArgument(token, channel, text string) argument {
-	return argument{
+func newArgument(token, channel, text string) *argument {
+	return &argument{
 		Token:   token,
 		Channel: channel,
 		Text:    text,

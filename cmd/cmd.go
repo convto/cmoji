@@ -21,10 +21,12 @@ func NewCmd(token, channelID string) Cmd {
 }
 
 func (c Cmd) ListEmoji() (map[string]string, error) {
+	fmt.Println(c)
 	return listEmoji(c.token)
 }
 
 func (c Cmd) StampEmoji(emoji string, emojiMap map[string]string) error {
+	fmt.Println(c)
 	text := fmt.Sprintf("stamp `%s`", emoji)
 	imgURL := emojiMap[strings.Trim(emoji, ":")]
 	a := newAttachment(text, imgURL, "#FFAACC")
@@ -35,6 +37,7 @@ func (c Cmd) StampEmoji(emoji string, emojiMap map[string]string) error {
 }
 
 func (c Cmd) SendEmojiMap(emojiMap map[string]string) error {
+	fmt.Println(c)
 	var keys []string
 	for k := range emojiMap {
 		keys = append(keys, k)
@@ -50,15 +53,6 @@ func (c Cmd) SendEmojiMap(emojiMap map[string]string) error {
 		return err
 	}
 	arg := newArgument(c.token, c.channelID, string(b))
-
-	return postMessage(c.token, arg)
-}
-
-func (c Cmd) HelpMessage() error {
-	text := "*get emoji list*\n```cmoji list```\n\n*stamp emoji*\n```cmoji stamp :custom_emoji:```"
-	a := newAttachment(text, "", "#CCCCCC")
-	arg := newArgument(c.token, c.channelID, "cmoji is custom emoji manager, usage.")
-	arg.setAttachments(a)
 
 	return postMessage(c.token, arg)
 }

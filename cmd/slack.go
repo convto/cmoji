@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func postMessage(token string, arg argument) error {
+func postMessage(token string, arg *argument) error {
 	b, err := json.Marshal(arg)
 	if err != nil {
 		return err
@@ -25,7 +25,8 @@ func postMessage(token string, arg argument) error {
 	req.Header.Add("Content-type", "application/json; charset=UTF-8")
 
 	c := http.DefaultClient
-	_, err = c.Do(req)
+	res, err := c.Do(req)
+	res.Body.Close()
 	if err != nil {
 		return err
 	}
@@ -68,6 +69,7 @@ func listEmoji(token string) (map[string]string, error) {
 	if err := json.Unmarshal(b, &e); err != nil {
 		return nil, err
 	}
+	fmt.Println(e)
 
 	if !e.OK {
 		return nil, errors.New("failed request")
