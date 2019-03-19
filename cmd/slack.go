@@ -26,7 +26,8 @@ func postMessage(token string, arg *argument) error {
 
 	c := http.DefaultClient
 	res, err := c.Do(req)
-	res.Body.Close()
+	b, _ = ioutil.ReadAll(res.Body)
+	fmt.Println(string(b))
 	if err != nil {
 		return err
 	}
@@ -69,7 +70,6 @@ func listEmoji(token string) (map[string]string, error) {
 	if err := json.Unmarshal(b, &e); err != nil {
 		return nil, err
 	}
-	fmt.Println(e)
 
 	if !e.OK {
 		return nil, errors.New("failed request")
