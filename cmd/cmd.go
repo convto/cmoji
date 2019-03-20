@@ -32,7 +32,7 @@ func (c Cmd) StampEmoji(emoji string, emojiMap map[string]string) error {
 	text := fmt.Sprintf("stamp `%s`", emoji)
 	imgURL := emojiMap[strings.Trim(emoji, ":")]
 	a := newAttachment(text, imgURL, "#FFAACC")
-	arg := newPublicArgument(c.token, c.channelID, "")
+	arg := newPublicArgument(c.token, c.channelID, "", c.userID)
 	arg.setAttachments(a)
 
 	return callChatAPI(c.token, arg, postMessageAPI)

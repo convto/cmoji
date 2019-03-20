@@ -10,11 +10,12 @@ type argument struct {
 }
 
 // public chat argument.
-func newPublicArgument(token, channel, text string) *argument {
+func newPublicArgument(token, channel, text, userID string) *argument {
 	return &argument{
 		Token:   token,
 		Channel: channel,
 		Text:    text,
+		User:    userID,
 		AsUser:  true,
 	}
 }
