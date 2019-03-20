@@ -23,12 +23,10 @@ func NewCmd(token, channelID, userID string) Cmd {
 }
 
 func (c Cmd) ListEmoji() (map[string]string, error) {
-	fmt.Println(c)
 	return listEmoji(c.token)
 }
 
 func (c Cmd) StampEmoji(emoji string, emojiMap map[string]string) error {
-	fmt.Println(c)
 	text := fmt.Sprintf("stamp `%s`", emoji)
 	imgURL := emojiMap[strings.Trim(emoji, ":")]
 	a := newAttachment(text, imgURL, "#FFAACC")
@@ -39,7 +37,6 @@ func (c Cmd) StampEmoji(emoji string, emojiMap map[string]string) error {
 }
 
 func (c Cmd) SendEmojiMap(emojiMap map[string]string) error {
-	fmt.Println(c)
 	var keys []string
 	for k := range emojiMap {
 		keys = append(keys, k)

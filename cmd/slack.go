@@ -79,6 +79,7 @@ func listEmoji(token string) (map[string]string, error) {
 	if err := json.Unmarshal(b, &e); err != nil {
 		return nil, err
 	}
+	fmt.Println(e)
 
 	if !e.OK {
 		return nil, errors.New("failed request")
