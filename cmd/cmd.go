@@ -29,6 +29,12 @@ func (c Cmd) ListEmoji() (map[string]string, error) {
 func (c Cmd) StampEmoji(emoji string, emojiMap map[string]string) error {
 	text := fmt.Sprintf("stamp `%s`", emoji)
 	imgURL := emojiMap[strings.Trim(emoji, ":")]
+
+	// support alias emoji
+	if strings.Contains(imgURL, "alias:") {
+		imgURL = emojiMap[strings.Trim(imgURL, "alias:")]
+	}
+
 	a := newAttachment(text, imgURL, "#FFAACC")
 	arg := newPublicArgument(c.token, c.channelID, "")
 	arg.setAttachments(a)
@@ -45,8 +51,14 @@ func (c Cmd) SendEmojiMap(emojiMap map[string]string) error {
 
 	buf := new(bytes.Buffer)
 	for _, v := range keys {
+		// support alias emoji
+		if strings.Contains(emojiMap[v], "alias:") {
+			continue
+		}
+
 		fmt.Fprintf(buf, "%s - :%s: | ", v, v)
 	}
+
 	b, err := ioutil.ReadAll(buf)
 	if err != nil {
 		return err
