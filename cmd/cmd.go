@@ -35,8 +35,14 @@ func (c Cmd) StampEmoji(emoji string, emojiMap map[string]string) error {
 		imgURL = emojiMap[strings.Trim(imgURL, "alias:")]
 	}
 
+	pl, err := listProfile(c.token)
+	if err != nil {
+		return err
+	}
+	u := newUser(pl[c.userID].name, pl[c.userID].iconURL)
+	arg := newUserArgument(c.token, c.channelID, "", u)
+
 	a := newAttachment(text, imgURL, "#FFAACC")
-	arg := newPublicArgument(c.token, c.channelID, "")
 	arg.setAttachments(a)
 
 	return callChatAPI(c.token, arg, postMessageAPI)

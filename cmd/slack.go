@@ -12,6 +12,8 @@ import (
 const (
 	postMessageAPI   = "https://slack.com/api/chat.postMessage"
 	postEphemeralAPI = "https://slack.com/api/chat.postEphemeral"
+	listEmojiAPI     = "https://slack.com/api/emoji.list"
+	listUserAPI      = "https://slack.com/api/users.list"
 )
 
 func callChatAPI(token string, arg *argument, url string) error {
@@ -44,13 +46,13 @@ func callChatAPI(token string, arg *argument, url string) error {
 }
 
 func listEmoji(token string) (map[string]string, error) {
-	url := fmt.Sprintf("https://slack.com/api/emoji.list?token=%s", token)
+	url := listEmojiAPI + "?token=%s" + token
 	res, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
 
-	b, err := ioutil.ReadAll(res.Body)
+	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -68,21 +70,75 @@ func listEmoji(token string) (map[string]string, error) {
 			}
 		}
 	*/
-	type emojiJSON struct {
-		OK bool `json:"ok"`
-		// errorレスポンスの時はemojiフィールドは存在しない
-		// そのため、型はpointerで定義
+	type result struct {
+		Ok bool `json:"ok"`
 		EmojiMap map[string]string `json:"emoji"`
 	}
 
-	var e emojiJSON
-	if err := json.Unmarshal(b, &e); err != nil {
+	var r result
+	if err := json.Unmarshal(body, &r); err != nil {
 		return nil, err
 	}
-	fmt.Println(e)
+	fmt.Println(r)
 
-	if !e.OK {
+	if !r.Ok {
 		return nil, errors.New("failed request")
 	}
-	return e.EmojiMap, nil
+	return r.EmojiMap, nil
+}
+
+type profile struct {
+	name    string
+	iconURL string
+}
+
+func listProfile(token string) (map[string]profile, error) {
+	req, err := http.NewRequest("POST", listUserAPI, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
+	req.Header.Add("Content-type", "application/json; charset=UTF-8")
+
+	c := http.DefaultClient
+	res, err := c.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	type result struct {
+		Ok      bool `json:"ok"`
+		Members []struct {
+			ID       string `json:"id"`
+			Profile  struct {
+				DisplayName string `json:"display_name"`
+				Image512    string `json:"image_512"`
+			} `json:"profile"`
+		} `json:"members"`
+	}
+
+	var r result
+	if err := json.Unmarshal(body, &r); err != nil {
+		return nil, err
+	}
+	fmt.Println(r)
+
+	if !r.Ok {
+		return nil, errors.New("failed request")
+	}
+
+	profiles := make(map[string]profile)
+	for _, m := range r.Members {
+		u := profile{
+			name:    m.Profile.DisplayName,
+			iconURL: m.Profile.Image512,
+		}
+		profiles[m.ID] = u
+	}
+
+	return profiles, nil
 }

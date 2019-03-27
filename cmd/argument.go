@@ -4,32 +4,43 @@ type argument struct {
 	Token       string       `json:"token"`
 	Channel     string       `json:"channel"`
 	Text        string       `json:"text"`
-	*User
+	ID          string       `json:"user"`
 	AsUser      bool         `json:"as_user"`
+	User
 	Attachments []attachment `json:"attachments"`
 }
 
 type User struct {
-	ID string `json:"user"`
+	UserName    string       `json:"user_name"`
+	IconURL     string       `json:"icon_url"`
+}
+
+func newUser(name, url string) User {
+	return User{
+		UserName: name,
+		IconURL:  url,
+	}
 }
 
 // public chat argument.
-func newPublicArgument(token, channel, text string) *argument {
+// ユーザーのアイコンを偽装するために投稿ユーザーのIDから各種情報を取ってきて使う
+// あくまで見た目の差し替えなので、as_userをtrueにしてはいけない
+func newUserArgument(token, channel, text string, user User) *argument {
 	return &argument{
 		Token:   token,
 		Channel: channel,
 		Text:    text,
-		AsUser:  true,
+		AsUser:  false,
+		User:    user,
 	}
 }
 
 // private chat argument.
 func newPrivateArgument(token, channel, text, userID string) *argument {
-	user := &User{userID}
 	return &argument{
 		Token:   token,
 		Channel: channel,
-		User:    user,
+		ID:      userID,
 		Text:    text,
 		AsUser:  false,
 	}
