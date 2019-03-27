@@ -11,7 +11,7 @@ type argument struct {
 }
 
 type User struct {
-	UserName    string       `json:"user_name"`
+	UserName    string       `json:"username"`
 	IconURL     string       `json:"icon_url"`
 }
 
