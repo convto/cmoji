@@ -46,7 +46,7 @@ func callChatAPI(token string, arg *argument, url string) error {
 }
 
 func listEmoji(token string) (map[string]string, error) {
-	url := listEmojiAPI + "?token=%s" + token
+	url := listEmojiAPI + "?token=" + token
 	res, err := http.Get(url)
 	if err != nil {
 		return nil, err
