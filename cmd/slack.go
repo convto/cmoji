@@ -32,6 +32,7 @@ func callChatAPI(token string, arg *argument, url string) error {
 
 	c := http.DefaultClient
 	res, err := c.Do(req)
+	defer res.Body.Close()
 	if err != nil {
 		return err
 	}
@@ -48,6 +49,7 @@ func callChatAPI(token string, arg *argument, url string) error {
 func listEmoji(token string) (map[string]string, error) {
 	url := listEmojiAPI + "?token=" + token
 	res, err := http.Get(url)
+	defer res.Body.Close()
 	if err != nil {
 		return nil, err
 	}
@@ -93,15 +95,9 @@ type profile struct {
 }
 
 func listProfile(token string) (map[string]profile, error) {
-	req, err := http.NewRequest("POST", listUserAPI, nil)
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
-	req.Header.Add("Content-type", "application/json; charset=UTF-8")
-
-	c := http.DefaultClient
-	res, err := c.Do(req)
+	url := listUserAPI + "?token=" + token
+	res, err := http.Get(url)
+	defer res.Body.Close()
 	if err != nil {
 		return nil, err
 	}
