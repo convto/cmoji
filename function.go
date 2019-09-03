@@ -35,6 +35,11 @@ func Cmoji(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(w, err)
 			return
 		}
+	case t == "holoxodia":
+		holoxodia := `:exodia_hidariude::top_edge::exodia::top_edge::exodia_migiude:
+:top_edge::exodia_hidariasi::top_edge::exodia_migiasi::top_edge:`
+		fmt.Fprintln(w, holoxodia)
+		return
 	case strings.Contains(t, "stamp"):
 		fields := strings.Fields(t)
 		if len(fields) != 2 {
